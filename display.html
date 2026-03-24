@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SN1 / SN2 / E1 / E2 Master Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a26;
+    --border: #2a2a40;
+    --sn1: #f97316;
+    --sn2: #22d3ee;
+    --e1: #a78bfa;
+    --e2: #4ade80;
+    --text: #e8e8f0;
+    --muted: #8888aa;
+    --accent: #fbbf24;
+    --danger: #f87171;
+    --good: #34d399;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 24px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    text-align: center;
+    margin-bottom: 32px;
+    position: relative;
+  }
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    font-weight: 900;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, var(--sn1), var(--sn2), var(--e1), var(--e2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 6px;
+  }
+  .header p {
+    color: var(--muted);
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  /* ── SECTION HEADERS ── */
+  .section-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+    margin-top: 32px;
+  }
+
+  /* ── DECISION FLOWCHART ── */
+  .decision-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    gap: 2px;
+    margin-bottom: 4px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .dg-header {
+    background: var(--surface2);
+    padding: 10px 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent);
+  }
+  .dg-row {
+    display: contents;
+  }
+  .dg-cell {
+    background: var(--surface);
+    padding: 9px 12px;
+    border-top: 1px solid var(--border);
+    font-size: 0.78rem;
+    vertical-align: middle;
+  }
+  .dg-cell.substrate {
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 0.8rem;
+  }
+  .dg-cell.result {
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-align: center;
+  }
+  .sn1-c { color: var(--sn1); }
+  .sn2-c { color: var(--sn2); }
+  .e1-c  { color: var(--e1); }
+  .e2-c  { color: var(--e2); }
+  .both  { font-size: 0.72rem; }
+
+  /* ── FACTOR TABLE ── */
+  .factor-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .factor-table th {
+    background: var(--surface2);
+    padding: 10px 14px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-align: left;
+  }
+  .factor-table th:not(:first-child) { text-align: center; }
+  .factor-table td {
+    padding: 9px 14px;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 0.78rem;
+    vertical-align: top;
+  }
+  .factor-table td:not(:first-child) { text-align: center; }
+  .factor-table tr:hover td { background: var(--surface2); }
+  .factor-label {
+    font-weight: 600;
+    color: var(--accent);
+    font-size: 0.75rem;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .factor-sub { color: var(--muted); font-size: 0.72rem; }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin: 1px;
+    font-family: 'Space Mono', monospace;
+  }
+  .tag-green { background: rgba(74,222,128,0.15); color: var(--e2); border: 1px solid rgba(74,222,128,0.3); }
+  .tag-red   { background: rgba(248,113,113,0.15); color: var(--danger); border: 1px solid rgba(248,113,113,0.3); }
+  .tag-orange{ background: rgba(249,115,22,0.15); color: var(--sn1); border: 1px solid rgba(249,115,22,0.3); }
+  .tag-blue  { background: rgba(34,211,238,0.15); color: var(--sn2); border: 1px solid rgba(34,211,238,0.3); }
+  .tag-purple{ background: rgba(167,139,250,0.15); color: var(--e1); border: 1px solid rgba(167,139,250,0.3); }
+  .tag-yellow{ background: rgba(251,191,36,0.15); color: var(--accent); border: 1px solid rgba(251,191,36,0.3); }
+
+  /* ── MECHANISM CARDS ── */
+  .mech-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .mech-card {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .mech-card-header {
+    padding: 14px 18px 10px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .mech-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 900;
+    line-height: 1;
+  }
+  .mech-full {
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  .mech-body { padding: 0 18px 18px; }
+
+  .step-list { list-style: none; counter-reset: steps; margin-bottom: 14px; }
+  .step-list li {
+    counter-increment: steps;
+    padding: 6px 0 6px 28px;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.78rem;
+  }
+  .step-list li:last-child { border-bottom: none; }
+  .step-list li::before {
+    content: counter(steps);
+    position: absolute;
+    left: 0;
+    top: 6px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 700;
+  }
+  .sn1-step::before { background: var(--sn1); color: #000; }
+  .sn2-step::before { background: var(--sn2); color: #000; }
+  .e1-step::before  { background: var(--e1); color: #000; }
+  .e2-step::before  { background: var(--e2); color: #000; }
+
+  .mini-section { margin-bottom: 12px; }
+  .mini-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 5px;
+    display: block;
+  }
+  .pill-row { display: flex; flex-wrap: wrap; gap: 4px; }
+
+  .callout {
+    background: var(--surface2);
+    border-left: 3px solid;
+    padding: 8px 12px;
+    border-radius: 0 6px 6px 0;
+    font-size: 0.75rem;
+    margin-top: 8px;
+    line-height: 1.6;
+  }
+
+  /* ── STEREOCHEMISTRY TABLE ── */
+  .stereo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 12px;
+  }
+  .stereo-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .stereo-card h4 {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .stereo-row {
+    margin-bottom: 8px;
+    font-size: 0.75rem;
+  }
+  .stereo-key { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* ── REGIOCHEMISTRY ── */
+  .regio-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .regio-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .regio-card h4 {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .regio-rule {
+    font-size: 0.75rem;
+    line-height: 1.7;
+  }
+  .highlight { color: var(--accent); font-weight: 600; }
+
+  /* ── LG / NUC TABLES ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .mini-table {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .mini-table-header {
+    background: var(--surface2);
+    padding: 8px 14px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  .mini-table-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 14px;
+    border-top: 1px solid var(--border);
+    font-size: 0.75rem;
+    align-items: center;
+  }
+  .rank-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    padding: 1px 6px;
+    border-radius: 3px;
+  }
+
+  /* ── CARBOCATION STABILITY ── */
+  .carbocation-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    flex-wrap: wrap;
+  }
+  .carbo-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    min-width: 60px;
+  }
+  .carbo-structure {
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 5px 10px;
+    border-radius: 6px;
+  }
+  .carbo-label { font-size: 0.62rem; color: var(--muted); text-align: center; }
+  .arrow-right { color: var(--accent); font-size: 1.2rem; margin: 0 2px; }
+
+  /* ── SOLVENT TABLE ── */
+  .solvent-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .solvent-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .solvent-card h4 {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .solvent-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    font-size: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .solvent-item:last-child { border-bottom: none; }
+  .solvent-name { font-family: 'Space Mono', monospace; font-weight: 700; }
+
+  /* ── REARRANGEMENTS ── */
+  .rearr-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .rearr-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .rearr-card h4 {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* ── QUICK TIPS ── */
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  .tip-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 0.73rem;
+  }
+  .tip-card h5 {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 7px;
+  }
+  .tip-card ul { padding-left: 14px; }
+  .tip-card li { margin-bottom: 4px; line-height: 1.5; }
+
+  /* ── TEMPERATURE NOTE ── */
+  .temp-banner {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .temp-item {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  /* SN1 orange, SN2 cyan, E1 purple, E2 green borders */
+  .border-sn1 { border-left: 4px solid var(--sn1); }
+  .border-sn2 { border-left: 4px solid var(--sn2); }
+  .border-e1  { border-left: 4px solid var(--e1);  }
+  .border-e2  { border-left: 4px solid var(--e2);  }
+
+  .bg-sn1 { background: rgba(249,115,22,0.07); }
+  .bg-sn2 { background: rgba(34,211,238,0.07); }
+  .bg-e1  { background: rgba(167,139,250,0.07); }
+  .bg-e2  { background: rgba(74,222,128,0.07); }
+
+  code {
+    font-family: 'Space Mono', monospace;
+    background: rgba(255,255,255,0.06);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 0.85em;
+  }
+
+  .footer {
+    text-align: center;
+    margin-top: 40px;
+    color: var(--muted);
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  @media print {
+    body { background: white; color: #111; font-size: 11px; padding: 10px; }
+    .mech-card, .stereo-card, .regio-card, .mini-table, .tip-card, .solvent-card, .rearr-card {
+      border-color: #ccc !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     HEADER
+═══════════════════════════════════════════ -->
+<div class="header">
+  <h1>SN1 · SN2 · E1 · E2</h1>
+  <p>Organic Chemistry Master Reference Sheet</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION 1 – DECISION CHART
+═══════════════════════════════════════════ -->
+<div class="section-title">§1 — Quick Decision Chart (Substrate × Conditions)</div>
+
+<div class="decision-grid">
+  <div class="dg-header">Substrate</div>
+  <div class="dg-header">Polar Protic Solvent<br><span style="color:var(--muted);font-weight:400">(H₂O, ROH, RCOOH) + weak nuc/base</span></div>
+  <div class="dg-header">Polar Aprotic Solvent<br><span style="color:var(--muted);font-weight:400">(DMSO, DMF, acetone) + good nuc</span></div>
+  <div class="dg-header">Strong Base<br><span style="color:var(--muted);font-weight:400">(NaOH, KOH, NaOEt — small)</span></div>
+  <div class="dg-header">Bulky Base<br><span style="color:var(--muted);font-weight:400">(KOtBu, LDA — large)</span></div>
+
+  <div class="dg-row">
+    <div class="dg-cell substrate">CH₃X &amp; 1° simple</div>
+    <div class="dg-cell result sn2-c">SN2</div>
+    <div class="dg-cell result sn2-c">SN2</div>
+    <div class="dg-cell result sn2-c">SN2</div>
+    <div class="dg-cell result sn2-c">SN2</div>
+  </div>
+  <div class="dg-row">
+    <div class="dg-cell substrate">1° with good Nuc</div>
+    <div class="dg-cell result sn2-c">SN2</div>
+    <div class="dg-cell result sn2-c">SN2</div>
+    <div class="dg-cell result both"><span class="sn2-c">SN2</span><span class="muted"> / </span><span class="e2-c">E2</span></div>
+    <div class="dg-cell result e2-c">E2</div>
+  </div>
+  <div class="dg-row">
+    <div class="dg-cell substrate">2°</div>
+    <div class="dg-cell result both"><span class="sn1-c">SN1</span> / <span class="e1-c">E1</span></div>
+    <div class="dg-cell result sn2-c">SN2</div>
+    <div class="dg-cell result both"><span class="e2-c">E2</span> / <span class="sn2-c">SN2</span></div>
+    <div class="dg-cell result e2-c">E2</div>
+  </div>
+  <div class="dg-row">
+    <div class="dg-cell substrate">3°</div>
+    <div class="dg-cell result both"><span class="sn1-c">SN1</span> / <span class="e1-c">E1</span></div>
+    <div class="dg-cell result both"><span class="sn1-c">SN1</span> / <span class="e1-c">E1</span></div>
+    <div class="dg-cell result e2-c">E2</div>
+    <div class="dg-cell result e2-c">E2</div>
+  </div>
+  <div class="dg-row">
+    <div class="dg-cell substrate">Vinyl / Aryl</div>
+    <div class="dg-cell result" style="color:var(--danger)">None</div>
+    <div class="dg-cell result" style="color:var(--danger)">None</div>
+    <div class="dg-cell result" style="color:var(--danger)">None</div>
+    <div class="dg-cell result" style="color:var(--danger)">None</div>
+  </div>
+  <div class="dg-row">
+    <div class="dg-cell substrate">Allylic / Benzylic</div>
+    <div class="dg-cell result both"><span class="sn1-c">SN1</span> / <span class="e1-c">E1</span></div>
+    <div class="dg-cell result sn2-c">SN2</div>
+    <div class="dg-cell result both"><span class="e2-c">E2</span> / <span class="sn2-c">SN2</span></div>
+    <div class="dg-cell result e2-c">E2</div>
+  </div>
+</div>
+
+<div style="color:var(--muted); font-size:0.68rem; margin-top:6px; margin-bottom:4px;">
+  ⚑ Heat favors <span class="e1-c">E1</span>/<span class="e2-c">E2</span> over <span class="sn1-c">SN1</span>/<span class="sn2-c">SN2</span>. &nbsp;|&nbsp; 
+  Neopentyl-type 1° → SN2 very slow (steric). &nbsp;|&nbsp;
+  SN2 impossible at 3° (steric).
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION 2 – FULL FACTOR COMPARISON TABLE
+═══════════════════════════════════════════ -->
+<div class="section-title">§2 — All Factors Compared</div>
+
+<table class="factor-table">
+  <thead>
+    <tr>
+      <th>Factor</th>
+      <th><span class="sn1-c">SN1</span></th>
+      <th><span class="sn2-c">SN2</span></th>
+      <th><span class="e1-c">E1</span></th>
+      <th><span class="e2-c">E2</span></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="factor-label">Substrate</span><span class="factor-sub">degree of C bearing LG</span></td>
+      <td><span class="tag tag-orange">3°</span> <span class="tag tag-orange">2° (slow)</span> <span class="tag tag-orange">allylic</span></td>
+      <td><span class="tag tag-blue">CH₃X</span> <span class="tag tag-blue">1°</span> <span class="tag tag-blue">2° (ok)</span></td>
+      <td><span class="tag tag-purple">3°</span> <span class="tag tag-purple">2° (slow)</span></td>
+      <td><span class="tag tag-green">3°</span> <span class="tag tag-green">2°</span> <span class="tag tag-green">1° (bulky base)</span></td>
+    </tr>
+    <tr>
+      <td><span class="factor-label">Nucleophile / Base</span></td>
+      <td>Weak Nuc<br><span class="factor-sub">H₂O, ROH, poor Nuc</span></td>
+      <td>Strong Nuc<br><span class="factor-sub">I⁻, CN⁻, RS⁻, N₃⁻, RO⁻</span></td>
+      <td>Weak base<br><span class="factor-sub">H₂O, ROH</span></td>
+      <td>Strong base, any size<br><span class="factor-sub">NaOH, NaOEt, KOtBu, LDA</span></td>
+    </tr>
+    <tr>
+      <td><span class="factor-label">Solvent</span></td>
+      <td>Polar Protic<br><span class="factor-sub">H₂O, MeOH, EtOH, AcOH</span></td>
+      <td>Polar Aprotic best<br><span class="factor-sub">DMSO, DMF, NMP, acetone</span></td>
+      <td>Polar Protic<br><span class="factor-sub">H₂O, ROH</span></td>
+      <td>Any (aprotic preferred)</td>
+    </tr>
+    <tr>
+      <td><span class="factor-label">Molecularity / Kinetics</span></td>
+      <td>Unimolecular<br><span class="factor-sub">rate = k[substrate]</span></td>
+      <td>Bimolecular<br><span class="factor-sub">rate = k[substrate][nuc]</span></td>
+      <td>Unimolecular<br><span class="factor-sub">rate = k[substrate]</span></td>
+      <td>Bimolecular<br><span class="factor-sub">rate = k[substrate][base]</span></td>
+    </tr>
+    <tr>
+      <td><span class="factor-label">Mechanism</span></td>
+      <td>2-step: LG leaves → Nuc attacks carbocation</td>
+      <td>1-step concerted: Nuc attacks as LG leaves</td>
+      <td>2-step: LG leaves → base removes β-H from carbo+</td>
+      <td>1-step concerted: base removes β-H &amp; LG leaves simultaneously</td>
+    </tr>
+    <tr>
+      <td><span class="factor-label">Intermediate</span></td>
+      <td><span class="tag tag-orange">Carbocation</span></td>
+      <td><span class="tag tag-red">None</span> (TS only)</td>
+      <td><span class="tag tag-purple">Carbocation</span></td>
+      <td><span class="tag tag-red">None</span> (TS only)</td>
+    </tr>
+    <tr>
+      <td><span class="factor-label">Temperature</span></td>
+      <td>Room / low<br><span class="factor-sub">(higher T → E1 competes)</span></td>
+      <td>Room / low</td>
+      <td>Higher T favors E1</td>
+      <td>Higher T strongly favors E2</td>
+    </tr>
+    <tr>
+      <td><span class="factor-label">Leaving Group</span></td>
+      <td colspan="4" style="text-align:left">Same for all: <span class="tag tag-green">I⁻</span> > <span class="tag tag-green">Br⁻</span> > <span class="tag tag-green">Cl⁻</span> > <span class="tag tag-yellow">OTs⁻ OMs⁻</span> &gt;&gt; <span class="tag tag-red">F⁻</span> &gt;&gt; <span class="tag tag-red">OH⁻ OR⁻ NH₂⁻</span> (need activation!)</td>
+    </tr>
+    <tr>
+      <td><span class="factor-label">Stereochemistry</span></td>
+      <td>Racemization (±)<br><span class="factor-sub">planar carbo+ attacked both faces</span></td>
+      <td>Inversion only<br><span class="factor-sub">Walden inversion / backside attack</span></td>
+      <td>Mixture<br><span class="factor-sub">Zaitsev alkene; some racemization</span></td>
+      <td>Anti-periplanar<br><span class="factor-sub">stereospecific: anti addition</span></td>
+    </tr>
+    <tr>
+      <td><span class="factor-label">Regiochemistry</span></td>
+      <td>Zaitsev (more substituted)<br><span class="factor-sub">most stable alkene</span></td>
+      <td>N/A (no elimination)</td>
+      <td>Zaitsev (more substituted)</td>
+      <td>Zaitsev (small base) or Hofmann (bulky base)</td>
+    </tr>
+    <tr>
+      <td><span class="factor-label">Rearrangements?</span></td>
+      <td><span class="tag tag-orange">YES</span> hydride/methyl shifts possible</td>
+      <td><span class="tag tag-red">NO</span></td>
+      <td><span class="tag tag-purple">YES</span> same as SN1</td>
+      <td><span class="tag tag-red">NO</span></td>
+    </tr>
+    <tr>
+      <td><span class="factor-label">Bulky Base?</span></td>
+      <td>N/A</td>
+      <td>Hinders SN2; may switch to E2</td>
+      <td>N/A</td>
+      <td><span class="highlight">KOtBu</span> → Hofmann (less substituted)</td>
+    </tr>
+  </tbody>
+</table>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION 3 – MECHANISM STEPS
+═══════════════════════════════════════════ -->
+<div class="section-title">§3 — Mechanism Steps</div>
+
+<div class="mech-grid">
+
+  <!-- SN1 -->
+  <div class="mech-card border-sn1 bg-sn1">
+    <div class="mech-card-header">
+      <div class="mech-name sn1-c">SN1</div>
+      <div class="mech-full">Substitution · Nucleophilic · Unimolecular</div>
+    </div>
+    <div class="mech-body">
+      <ol class="step-list">
+        <li class="sn1-step"><strong>Ionization (slow, RDS):</strong> LG leaves heterolytically; bonding pair goes with LG. Forms planar carbocation + LG⁻. Polar protic solvent stabilizes both ions.</li>
+        <li class="sn1-step"><strong>[Optional] Rearrangement:</strong> If adjacent C has H or alkyl that would give a <em>more stable</em> carbocation → 1,2-hydride shift or 1,2-methyl shift occurs. Check: is there a more stable carbo+ possible?</li>
+        <li class="sn1-step"><strong>[Optional] Proton transfer:</strong> If carbocation is adjacent to H that can move to give resonance-stabilized cation, this may occur.</li>
+        <li class="sn1-step"><strong>Nucleophilic attack (fast):</strong> Nucleophile attacks planar carbocation from <em>both faces equally</em> → racemic mixture (50/50 R/S). If only one face is blocked → partial inversion with some retention.</li>
+        <li class="sn1-step"><strong>[Optional] Deprotonation:</strong> If nucleophile attacked O to give oxonium ion (R-OH₂⁺), solvent removes proton to give final alcohol.</li>
+      </ol>
+      <div class="mini-section">
+        <span class="mini-label">Key Conditions</span>
+        <div class="pill-row">
+          <span class="tag tag-orange">3° substrate</span>
+          <span class="tag tag-orange">polar protic solvent</span>
+          <span class="tag tag-orange">weak Nuc</span>
+          <span class="tag tag-orange">good LG</span>
+          <span class="tag tag-orange">low/room temp</span>
+        </div>
+      </div>
+      <div class="callout" style="border-color:var(--sn1)">
+        🔑 <strong>Rearrangement check (SN1/E1):</strong> After RDS, look at carbocation. Is there a β-hydrogen or β-alkyl on a carbon adjacent to the + charge that would create a 3° or resonance-stabilized carbocation? If <em>yes</em>, draw the shift and use the rearranged carbocation for subsequent steps.
+      </div>
+    </div>
+  </div>
+
+  <!-- SN2 -->
+  <div class="mech-card border-sn2 bg-sn2">
+    <div class="mech-card-header">
+      <div class="mech-name sn2-c">SN2</div>
+      <div class="mech-full">Substitution · Nucleophilic · Bimolecular</div>
+    </div>
+    <div class="mech-body">
+      <ol class="step-list">
+        <li class="sn2-step"><strong>Backside attack (single concerted step):</strong> Nucleophile approaches 180° from the LG. The transition state is a pentacoordinate trigonal bipyramidal species with partial bonds to both Nuc and LG.</li>
+        <li class="sn2-step"><strong>Bond formation / bond breaking simultaneous:</strong> As Nuc–C bond forms, C–LG bond breaks. No intermediate.</li>
+        <li class="sn2-step"><strong>Inversion of configuration (Walden inversion):</strong> The three substituents on C invert like an umbrella flipping in wind. If stereocenter is present: R → S or S → R at that carbon.</li>
+      </ol>
+      <div class="mini-section">
+        <span class="mini-label">Key Conditions</span>
+        <div class="pill-row">
+          <span class="tag tag-blue">CH₃ or 1° (best)</span>
+          <span class="tag tag-blue">2° (slower)</span>
+          <span class="tag tag-blue">polar aprotic solvent</span>
+          <span class="tag tag-blue">strong Nuc</span>
+          <span class="tag tag-blue">good LG</span>
+        </div>
+      </div>
+      <div class="callout" style="border-color:var(--sn2)">
+        🔑 <strong>Steric effects:</strong> CH₃X fastest → 1° → 2° much slower → 3° impossible (blocked). Neopentyl (1° but 3° β-carbon) also very slow. Polar aprotic solvents liberate "naked" anions → much faster SN2 than protic solvents (which cage the nucleophile via H-bonding).
+      </div>
+    </div>
+  </div>
+
+  <!-- E1 -->
+  <div class="mech-card border-e1 bg-e1">
+    <div class="mech-card-header">
+      <div class="mech-name e1-c">E1</div>
+      <div class="mech-full">Elimination · Unimolecular</div>
+    </div>
+    <div class="mech-body">
+      <ol class="step-list">
+        <li class="e1-step"><strong>Ionization (slow, RDS):</strong> Same first step as SN1! LG leaves to form carbocation. Rate = k[substrate] only.</li>
+        <li class="e1-step"><strong>[Optional] Rearrangement:</strong> Exactly as SN1 — check for hydride or alkyl shift to form more stable carbocation.</li>
+        <li class="e1-step"><strong>Deprotonation (fast):</strong> Base (often solvent) removes a β-proton from C adjacent to carbocation. π bond forms between α-C and β-C as electrons from C–H bond fill the empty p orbital.</li>
+        <li class="e1-step"><strong>Product:</strong> Alkene. Regiochemistry follows Zaitsev — most substituted (most stable) alkene preferred.</li>
+      </ol>
+      <div class="mini-section">
+        <span class="mini-label">Key Conditions</span>
+        <div class="pill-row">
+          <span class="tag tag-purple">3° substrate</span>
+          <span class="tag tag-purple">polar protic solvent</span>
+          <span class="tag tag-purple">weak base (H₂O, ROH)</span>
+          <span class="tag tag-purple">higher temp</span>
+          <span class="tag tag-purple">good LG</span>
+        </div>
+      </div>
+      <div class="callout" style="border-color:var(--e1)">
+        🔑 <strong>E1 vs SN1:</strong> Both share the same RDS (ionization). Product ratio depends on whether Nuc attacks C⁺ (→SN1) or base removes β-H (→E1). Higher temp and more β-H available → more E1. E1 stereochemistry is NOT stereospecific (carbocation is sp² but rotation around α–β bond is free, so any H can be removed).
+      </div>
+    </div>
+  </div>
+
+  <!-- E2 -->
+  <div class="mech-card border-e2 bg-e2">
+    <div class="mech-card-header">
+      <div class="mech-name e2-c">E2</div>
+      <div class="mech-full">Elimination · Bimolecular</div>
+    </div>
+    <div class="mech-body">
+      <ol class="step-list">
+        <li class="e2-step"><strong>Anti-periplanar alignment required:</strong> The β-H and LG must be 180° apart (anti-periplanar). In Newman projection: H and LG are anti to each other. This is a geometric requirement — the molecule must adopt this conformation.</li>
+        <li class="e2-step"><strong>Concerted (single step):</strong> Base abstracts β-H, electrons flow to form C=C π bond, LG departs simultaneously. Transition state has partial bonds everywhere.</li>
+        <li class="e2-step"><strong>Product stereochemistry determined by which β-H is anti to LG:</strong> Check Newman projection. The specific H removed and its spatial relationship to substituents determines whether E or Z alkene is formed.</li>
+      </ol>
+      <div class="mini-section">
+        <span class="mini-label">Key Conditions</span>
+        <div class="pill-row">
+          <span class="tag tag-green">strong base</span>
+          <span class="tag tag-green">bulky base → Hofmann</span>
+          <span class="tag tag-green">2° or 3° preferred</span>
+          <span class="tag tag-green">good LG</span>
+          <span class="tag tag-green">higher temp</span>
+        </div>
+      </div>
+      <div class="callout" style="border-color:var(--e2)">
+        🔑 <strong>Anti-periplanar = STEREOSPECIFIC:</strong> Only the H that is anti to the LG can be removed. Draw Newman projection, find which H is 180° from LG, and that determines: (a) which carbon loses H → regiochemistry, (b) which face eliminates → E vs Z geometry. <em>Different starting stereoisomers give different alkene products.</em>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION 4 – STEREOCHEMISTRY IN DEPTH
+═══════════════════════════════════════════ -->
+<div class="section-title">§4 — Stereochemistry Details</div>
+
+<div class="stereo-grid">
+  <div class="stereo-card border-sn1">
+    <h4 class="sn1-c">SN1 Stereochemistry</h4>
+    <div class="stereo-row">
+      <div class="stereo-key">Type</div>
+      <div>Racemization (non-stereospecific)</div>
+    </div>
+    <div class="stereo-row">
+      <div class="stereo-key">Why?</div>
+      <div>Planar sp² carbocation — Nuc attacks from either face equally → 50% R + 50% S</div>
+    </div>
+    <div class="stereo-row">
+      <div class="stereo-key">In practice</div>
+      <div>Often slight excess of inversion product because LG leaves from one face and partially blocks it momentarily (ion pair)</div>
+    </div>
+    <div class="stereo-row">
+      <div class="stereo-key">Chiral product?</div>
+      <div>Only if starting material was chiral AND all products are chiral — then racemic mixture</div>
+    </div>
+  </div>
+
+  <div class="stereo-card border-sn2">
+    <h4 class="sn2-c">SN2 Stereochemistry</h4>
+    <div class="stereo-row">
+      <div class="stereo-key">Type</div>
+      <div>Stereospecific — complete inversion</div>
+    </div>
+    <div class="stereo-row">
+      <div class="stereo-key">Why?</div>
+      <div>Backside (180°) attack only — Walden inversion</div>
+    </div>
+    <div class="stereo-row">
+      <div class="stereo-key">R → ?</div>
+      <div>Depends on CIP priority change. Inversion of spatial arrangement, not necessarily R→S. If priorities change, could be R→R!</div>
+    </div>
+    <div class="stereo-row">
+      <div class="stereo-key">Newman tip</div>
+      <div>Draw product with every group inverted relative to starting material at the reaction center</div>
+    </div>
+    <div class="stereo-row">
+      <div class="stereo-key">Multiple stereocenters</div>
+      <div>Only the attacked center inverts — all other stereocenters retain configuration</div>
+    </div>
+  </div>
+
+  <div class="stereo-card border-e1">
+    <h4 class="e1-c">E1 Stereochemistry</h4>
+    <div class="stereo-row">
+      <div class="stereo-key">Type</div>
+      <div>NOT stereospecific</div>
+    </div>
+    <div class="stereo-row">
+      <div class="stereo-key">Why?</div>
+      <div>Carbocation can rotate freely; any β-H can be removed from any face</div>
+    </div>
+    <div class="stereo-row">
+      <div class="stereo-key">Alkene geometry</div>
+      <div>Zaitsev product; mixture of E/Z possible but thermodynamically more stable E (trans) usually predominates</div>
+    </div>
+    <div class="stereo-row">
+      <div class="stereo-key">Regiochemistry</div>
+      <div>Zaitsev rule: remove H from the β-carbon with fewer H's (gives more substituted alkene)</div>
+    </div>
+  </div>
+
+  <div class="stereo-card border-e2">
+    <h4 class="e2-c">E2 Stereochemistry</h4>
+    <div class="stereo-row">
+      <div class="stereo-key">Type</div>
+      <div><strong>Stereospecific</strong> — anti-periplanar required</div>
+    </div>
+    <div class="stereo-row">
+      <div class="stereo-key">Requirement</div>
+      <div>β-H and LG must be 180° (anti) in the transition state → draw Newman projection to verify</div>
+    </div>
+    <div class="stereo-row">
+      <div class="stereo-key">E vs Z</div>
+      <div>Determined by which conformer places H anti to LG. The groups <em>gauche</em> to each other in the anti-periplanar TS end up cis (Z) in product</div>
+    </div>
+    <div class="stereo-row">
+      <div class="stereo-key">Cyclohexanes</div>
+      <div>Both H and LG must be <strong>diaxial</strong> (trans-diaxial) to achieve anti-periplanar. Draw chair conformation!</div>
+    </div>
+    <div class="stereo-row">
+      <div class="stereo-key">Mnemonic</div>
+      <div>"Bases are anti-social" → anti elimination</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION 5 – REGIOCHEMISTRY
+═══════════════════════════════════════════ -->
+<div class="section-title">§5 — Regiochemistry (Elimination Products)</div>
+
+<div class="regio-grid">
+  <div class="regio-card">
+    <h4><span style="font-size:1rem">📐</span> <span class="e2-c">Zaitsev Rule</span> <span style="color:var(--muted);font-size:0.65rem">(most substituted alkene)</span></h4>
+    <div class="regio-rule">
+      <p><strong>When:</strong> Small/strong base (<code>NaOH</code>, <code>NaOEt</code>, <code>KOH</code>) or E1 conditions</p>
+      <br>
+      <p><strong>Rule:</strong> Remove the β-H from the <span class="highlight">carbon bearing fewer hydrogens</span> → gives the alkene with more substituents on the double bond → more stable (more hyperconjugation / less steric strain in product)</p>
+      <br>
+      <p><strong>Stability order of alkenes:</strong><br>
+      tetrasubstituted > trisubstituted > disubstituted > monosubstituted > ethylene</p>
+      <br>
+      <p><strong>Example:</strong> 2-bromobutane + NaOEt → major product is <span class="highlight">2-butene</span> (trisubstituted) over 1-butene (monosubstituted)</p>
+    </div>
+  </div>
+
+  <div class="regio-card">
+    <h4><span style="font-size:1rem">🏔</span> <span class="e2-c">Hofmann Rule</span> <span style="color:var(--muted);font-size:0.65rem">(least substituted alkene)</span></h4>
+    <div class="regio-rule">
+      <p><strong>When:</strong> <span class="highlight">Bulky base</span> (<code>KOtBu</code>, <code>LDA</code>) — base cannot reach the more hindered β-carbon</p>
+      <br>
+      <p><strong>Rule:</strong> Remove H from the <span class="highlight">carbon bearing more hydrogens</span> (more accessible) → less substituted alkene (Hofmann product)</p>
+      <br>
+      <p><strong>Also applies to:</strong> Quaternary ammonium salts (Hofmann elimination via E2 with ⁻OH), bulky sulfonate LGs</p>
+      <br>
+      <p><strong>Example:</strong> 2-bromo-2-methylbutane + KOtBu → major product is <span class="highlight">2-methylbut-1-ene</span> (less substituted) instead of 2-methylbut-2-ene</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION 6 – E/Z CONFIGURATION
+═══════════════════════════════════════════ -->
+<div class="section-title">§6 — E / Z Configuration of Alkene Products</div>
+
+<div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+  <div class="regio-card">
+    <h4 style="color:var(--accent)">Determining E / Z from E2</h4>
+    <div class="regio-rule" style="font-size:0.75rem; line-height:1.8">
+      <strong>Step 1:</strong> Draw Newman projection looking down β–α bond (β in front).<br>
+      <strong>Step 2:</strong> Rotate to place LG and H anti (180°). Write down what groups are gauche.<br>
+      <strong>Step 3:</strong> Groups that are <span class="highlight">gauche to each other</span> in the anti-periplanar TS will be <span class="highlight">cis (same side)</span> in the alkene product.<br>
+      <strong>Step 4:</strong> Assign E/Z using CIP rules: higher priority on same side = Z; opposite sides = E.<br><br>
+      <em>CIP priority: higher atomic number = higher priority. Tie: look at next atoms (like isotopes). Double bond duplicated atoms.</em>
+    </div>
+  </div>
+  <div class="regio-card">
+    <h4 style="color:var(--accent)">E / Z Quick Rules</h4>
+    <div class="regio-rule" style="font-size:0.75rem; line-height:1.8">
+      <strong>E</strong> (Entgegen = "opposite") → higher priority groups on <span class="highlight">opposite sides</span> of double bond.<br>
+      <strong>Z</strong> (Zusammen = "together") → higher priority groups on <span class="highlight">same side</span>.<br><br>
+      <strong>Trans ≈ E</strong> and <strong>Cis ≈ Z</strong> — but not always! Use CIP rules to be certain.<br><br>
+      <strong>Thermodynamics:</strong> E (trans) usually more stable than Z (cis) due to steric interactions of large groups — so E1 tends to give more E product.
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION 7 – CARBOCATION STABILITY & REARRANGEMENTS
+═══════════════════════════════════════════ -->
+<div class="section-title">§7 — Carbocation Stability & Rearrangements (SN1 / E1 only)</div>
+
+<div class="mini-section">
+  <span class="mini-label">Stability Order (most → least stable)</span>
+  <div class="carbocation-row">
+    <div class="carbo-item">
+      <div class="carbo-structure" style="background:rgba(74,222,128,0.2); color:var(--e2)">R₃C⁺</div>
+      <div class="carbo-label">3° Carbocation<br>Most Stable</div>
+    </div>
+    <div class="arrow-right">></div>
+    <div class="carbo-item">
+      <div class="carbo-structure" style="background:rgba(251,191,36,0.2); color:var(--accent)">Allylic<br>C=C–C⁺</div>
+      <div class="carbo-label">Allylic<br>(resonance)</div>
+    </div>
+    <div class="arrow-right">≈</div>
+    <div class="carbo-item">
+      <div class="carbo-structure" style="background:rgba(251,191,36,0.2); color:var(--accent)">Benzyl<br>Ar–C⁺</div>
+      <div class="carbo-label">Benzylic<br>(resonance)</div>
+    </div>
+    <div class="arrow-right">></div>
+    <div class="carbo-item">
+      <div class="carbo-structure" style="background:rgba(34,211,238,0.2); color:var(--sn2)">R₂CH⁺</div>
+      <div class="carbo-label">2° Carbocation</div>
+    </div>
+    <div class="arrow-right">></div>
+    <div class="carbo-item">
+      <div class="carbo-structure" style="background:rgba(249,115,22,0.2); color:var(--sn1)">RCH₂⁺</div>
+      <div class="carbo-label">1° Carbocation<br>(rare)</div>
+    </div>
+    <div class="arrow-right">></div>
+    <div class="carbo-item">
+      <div class="carbo-structure" style="background:rgba(248,113,113,0.2); color:var(--danger)">CH₃⁺</div>
+      <div class="carbo-label">Methyl<br>Least Stable</div>
+    </div>
+  </div>
+</div>
+
+<div class="rearr-grid" style="margin-top:12px">
+  <div class="rearr-card">
+    <h4><span class="sn1-c">1,2-Hydride Shift</span></h4>
+    <div style="font-size:0.76rem; line-height:1.7">
+      <strong>When:</strong> Carbocation has adjacent C–H where the H migration would give a more stable carbocation.<br>
+      <strong>What moves:</strong> H atom (with its bonding electrons) migrates from β-carbon to the carbocation center.<br>
+      <strong>Result:</strong> Carbocation moves one carbon over. Example: 2° → 3° is very favorable.<br>
+      <strong>Arrows:</strong> Draw curved arrow from C–H bond → empty p orbital of carbocation.
+    </div>
+  </div>
+  <div class="rearr-card">
+    <h4><span class="sn1-c">1,2-Methyl (Alkyl) Shift</span></h4>
+    <div style="font-size:0.76rem; line-height:1.7">
+      <strong>When:</strong> No adjacent H available, but adjacent C–C bond migration gives more stable carbocation (less common than hydride).<br>
+      <strong>What moves:</strong> Entire methyl/alkyl group with its bonding electrons migrates.<br>
+      <strong>Result:</strong> Carbon skeleton changes! Product may have rearranged skeleton.<br>
+      <strong>Tip:</strong> Always check if rearrangement is possible before drawing product — the major product may be the rearranged one.
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION 8 – LEAVING GROUPS & NUCLEOPHILES
+═══════════════════════════════════════════ -->
+<div class="section-title">§8 — Leaving Groups & Nucleophiles / Bases</div>
+
+<div class="two-col">
+  <div class="mini-table">
+    <div class="mini-table-header" style="color:var(--sn1)">Leaving Group Ability (Best → Worst)</div>
+    <div class="mini-table-row"><span>I⁻ (iodide)</span> <span class="rank-badge tag-green">Best</span></div>
+    <div class="mini-table-row"><span>Br⁻ (bromide)</span> <span class="rank-badge tag-green">Excellent</span></div>
+    <div class="mini-table-row"><span>Cl⁻ (chloride)</span> <span class="rank-badge tag-yellow">Good</span></div>
+    <div class="mini-table-row"><span>OTs⁻ OMs⁻ OTf⁻ (sulfonates)</span> <span class="rank-badge tag-green">Excellent</span></div>
+    <div class="mini-table-row"><span>H₂O (after protonation of OH)</span> <span class="rank-badge tag-yellow">Good</span></div>
+    <div class="mini-table-row"><span>F⁻ (fluoride)</span> <span class="rank-badge tag-red">Poor</span></div>
+    <div class="mini-table-row"><span>OH⁻ (hydroxide — needs H⁺ first!)</span> <span class="rank-badge tag-red">None</span></div>
+    <div class="mini-table-row"><span>OR⁻, NH₂⁻, NR₂⁻</span> <span class="rank-badge tag-red">None</span></div>
+    <div style="padding:8px 14px; font-size:0.7rem; color:var(--muted)">
+      Rule: Good LGs are <strong>weak conjugate bases</strong> of strong acids. Must be able to stabilize negative charge after departure. Protonate OH → H₂O before SN/E reaction.
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:10px;">
+    <div class="mini-table">
+      <div class="mini-table-header" style="color:var(--sn2)">Strong Nucleophiles (favor SN2)</div>
+      <div class="mini-table-row"><span>HS⁻, RS⁻ (sulfur nucleophiles)</span> <span class="rank-badge tag-blue">Best Nuc</span></div>
+      <div class="mini-table-row"><span>I⁻ (in polar aprotic)</span> <span class="rank-badge tag-blue">Excellent</span></div>
+      <div class="mini-table-row"><span>CN⁻ (cyanide)</span> <span class="rank-badge tag-blue">Strong</span></div>
+      <div class="mini-table-row"><span>N₃⁻ (azide)</span> <span class="rank-badge tag-blue">Strong</span></div>
+      <div class="mini-table-row"><span>RO⁻ (alkoxide)</span> <span class="rank-badge tag-blue">Strong</span></div>
+      <div class="mini-table-row"><span>RNH₂, R₂NH (amines)</span> <span class="rank-badge tag-yellow">Moderate</span></div>
+      <div class="mini-table-row"><span>Br⁻, Cl⁻ (in polar aprotic)</span> <span class="rank-badge tag-yellow">Moderate</span></div>
+    </div>
+    <div class="mini-table">
+      <div class="mini-table-header" style="color:var(--muted)">Weak Nucleophiles (favor SN1 or no reaction)</div>
+      <div class="mini-table-row"><span>H₂O</span> <span class="rank-badge tag-red">Weak</span></div>
+      <div class="mini-table-row"><span>ROH (alcohols as solvent)</span> <span class="rank-badge tag-red">Weak</span></div>
+      <div class="mini-table-row"><span>Br⁻, Cl⁻ (in polar protic)</span> <span class="rank-badge tag-red">Weak (caged)</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="two-col" style="margin-top:12px">
+  <div class="mini-table">
+    <div class="mini-table-header" style="color:var(--e2)">Strong Bases (favor E2)</div>
+    <div class="mini-table-row"><span>KOtBu (bulky → Hofmann)</span> <span class="rank-badge tag-green">Bulky + Strong</span></div>
+    <div class="mini-table-row"><span>LDA (very bulky, very strong)</span> <span class="rank-badge tag-green">Bulky + Strong</span></div>
+    <div class="mini-table-row"><span>NaOEt (small, strong)</span> <span class="rank-badge tag-green">Strong → Zaitsev</span></div>
+    <div class="mini-table-row"><span>NaOH, KOH</span> <span class="rank-badge tag-green">Strong → Zaitsev</span></div>
+    <div class="mini-table-row"><span>NaNH₂ (very strong)</span> <span class="rank-badge tag-green">Very Strong</span></div>
+  </div>
+  <div class="mini-table">
+    <div class="mini-table-header" style="color:var(--e1)">Weak Bases (favor E1 or SN1)</div>
+    <div class="mini-table-row"><span>H₂O (aqueous)</span> <span class="rank-badge tag-purple">Very Weak</span></div>
+    <div class="mini-table-row"><span>ROH (alcoholic solvent)</span> <span class="rank-badge tag-purple">Weak</span></div>
+    <div class="mini-table-row"><span>Py (pyridine)</span> <span class="rank-badge tag-purple">Weak</span></div>
+    <div style="padding:8px 14px; font-size:0.7rem; color:var(--muted)">
+      Weak base ≠ weak nucleophile and vice versa. Thiols are strong Nuc but weak base. RO⁻ is both strong base and Nuc.
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION 9 – SOLVENTS
+═══════════════════════════════════════════ -->
+<div class="section-title">§9 — Solvent Guide</div>
+
+<div class="solvent-grid">
+  <div class="solvent-card border-sn1">
+    <h4 class="sn1-c">Polar Protic Solvents → SN1 / E1</h4>
+    <div class="solvent-item"><span class="solvent-name">H₂O</span><span>water</span><span class="tag tag-orange">SN1</span></div>
+    <div class="solvent-item"><span class="solvent-name">MeOH</span><span>methanol</span><span class="tag tag-orange">SN1</span></div>
+    <div class="solvent-item"><span class="solvent-name">EtOH</span><span>ethanol</span><span class="tag tag-orange">SN1</span></div>
+    <div class="solvent-item"><span class="solvent-name">AcOH</span><span>acetic acid</span><span class="tag tag-orange">SN1</span></div>
+    <div class="solvent-item"><span class="solvent-name">t-BuOH</span><span>tert-butanol</span><span class="tag tag-orange">SN1</span></div>
+    <div style="margin-top:8px; font-size:0.72rem; color:var(--muted)">Contains O–H (or N–H) that H-bonds → stabilizes anions (LG⁻) and cations (carbo⁺). Solvates nucleophiles, reducing their reactivity (bad for SN2). Good for SN1 ionization.</div>
+  </div>
+  <div class="solvent-card border-sn2">
+    <h4 class="sn2-c">Polar Aprotic Solvents → SN2 / E2</h4>
+    <div class="solvent-item"><span class="solvent-name">DMSO</span><span>dimethyl sulfoxide</span><span class="tag tag-blue">SN2</span></div>
+    <div class="solvent-item"><span class="solvent-name">DMF</span><span>dimethylformamide</span><span class="tag tag-blue">SN2</span></div>
+    <div class="solvent-item"><span class="solvent-name">Acetone</span><span></span><span class="tag tag-blue">SN2</span></div>
+    <div class="solvent-item"><span class="solvent-name">CH₃CN</span><span>acetonitrile</span><span class="tag tag-blue">SN2</span></div>
+    <div class="solvent-item"><span class="solvent-name">NMP</span><span>N-methylpyrrolidinone</span><span class="tag tag-blue">SN2</span></div>
+    <div style="margin-top:8px; font-size:0.72rem; color:var(--muted)">Polar (dissolves salts) but NO O–H to H-bond nucleophile. Anions are "naked" and highly reactive → SN2 up to 10⁶× faster than in protic! Does not stabilize carbocations → discourages SN1.</div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION 10 – NEWMAN PROJECTIONS FOR E2
+═══════════════════════════════════════════ -->
+<div class="section-title">§10 — Newman Projection Guide for E2 (& SN2 backside)</div>
+
+<div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px;">
+  <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:16px; font-size:0.76rem; line-height:1.8">
+    <div>
+      <strong style="color:var(--e2)">Drawing the Newman:</strong><br>
+      1. Identify α-C (bearing LG) and β-C (bearing H to be removed).<br>
+      2. Draw Newman looking from β → α (or α → β consistently).<br>
+      3. Front circle = nearer carbon, back circle = farther carbon.<br>
+      4. Place all 3 substituents on front C at 120° intervals, all 3 on back C offset.
+    </div>
+    <div>
+      <strong style="color:var(--e2)">Finding anti-periplanar H:</strong><br>
+      1. Identify LG on back carbon.<br>
+      2. Rotate front or back carbon until an H on front C is 180° from LG.<br>
+      3. That's your anti-periplanar H → E2 removes it.<br>
+      4. The substituents <em>gauche</em> to each other at that conformation = cis in alkene product.
+    </div>
+    <div>
+      <strong style="color:var(--e2)">Cyclohexane special case:</strong><br>
+      1. Draw chair conformation.<br>
+      2. H and LG must both be <strong>axial</strong> (trans-diaxial) to be anti-periplanar.<br>
+      3. If they are equatorial/axial mixed → need ring flip first!<br>
+      4. After ring flip, check which trans-diaxial pair is possible → that determines product.
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION 11 – TEMPERATURE & QUICK TIPS
+═══════════════════════════════════════════ -->
+<div class="section-title">§11 — Temperature, Heat, and Quick Decision Tips</div>
+
+<div class="temp-banner">
+  <div class="temp-item border-e2">
+    <strong style="color:var(--e2)">↑ Higher Temperature</strong><br>
+    Favors elimination (<span class="e2-c">E2</span> and <span class="e1-c">E1</span>) over substitution. Entropy-driven — elimination produces 2 molecules (alkene + HX). Use heat to push toward alkene products.
+  </div>
+  <div class="temp-item border-sn2">
+    <strong style="color:var(--sn2)">Room Temperature / Cold</strong><br>
+    Favors substitution (<span class="sn1-c">SN1</span> and <span class="sn2-c">SN2</span>). Lower temperature slows elimination. Good for SN2 with good nucleophile in polar aprotic.
+  </div>
+  <div class="temp-item border-sn1">
+    <strong style="color:var(--sn1)">Concentration of Base/Nuc</strong><br>
+    High [base] → E2. Low [base/nuc] → SN1/E1 (depends on substrate). SN2 rate linear in [Nuc] — double concentration, double rate.
+  </div>
+</div>
+
+<div class="tips-grid" style="margin-top:12px">
+  <div class="tip-card border-sn1">
+    <h5 class="sn1-c">SN1 Checklist</h5>
+    <ul>
+      <li>3° substrate (or allylic/benzylic)</li>
+      <li>Polar protic solvent</li>
+      <li>Weak/no nucleophile</li>
+      <li>Good LG (Br, I, OTs)</li>
+      <li>Room temp or lower</li>
+      <li>Check for rearrangement!</li>
+      <li>Product = racemic</li>
+    </ul>
+  </div>
+  <div class="tip-card border-sn2">
+    <h5 class="sn2-c">SN2 Checklist</h5>
+    <ul>
+      <li>CH₃X or 1° (best); 2° ok</li>
+      <li>Polar aprotic solvent</li>
+      <li>Strong, unhindered nucleophile</li>
+      <li>Good LG</li>
+      <li>Low steric hindrance</li>
+      <li>Product = inverted stereocenter</li>
+      <li>No rearrangement</li>
+    </ul>
+  </div>
+  <div class="tip-card border-e1">
+    <h5 class="e1-c">E1 Checklist</h5>
+    <ul>
+      <li>3° substrate</li>
+      <li>Polar protic solvent</li>
+      <li>Weak base (H₂O, ROH)</li>
+      <li>Higher temperature</li>
+      <li>Good LG</li>
+      <li>Check for rearrangement!</li>
+      <li>Zaitsev product (most subst.)</li>
+    </ul>
+  </div>
+  <div class="tip-card border-e2">
+    <h5 class="e2-c">E2 Checklist</h5>
+    <ul>
+      <li>Any degree (1°,2°,3° ok)</li>
+      <li>Strong base</li>
+      <li>Bulky base → Hofmann</li>
+      <li>Small base → Zaitsev</li>
+      <li>Anti-periplanar H required</li>
+      <li>Draw Newman projection</li>
+      <li>Stereospecific E/Z product</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION 12 – ACTIVATING POOR LEAVING GROUPS
+═══════════════════════════════════════════ -->
+<div class="section-title">§12 — Activating Poor Leaving Groups</div>
+
+<div style="display:grid; grid-template-columns: repeat(3,1fr); gap:10px; font-size:0.76rem;">
+  <div class="regio-card">
+    <h4 style="color:var(--accent)">OH → OTs / OMs</h4>
+    <div>Convert alcohol to tosylate (TsCl/py) or mesylate (MsCl/py). The sulfonate is an excellent leaving group. Stereospecific: <strong>configuration retained</strong> at carbon during tosylation, then inverted by SN2 if desired.</div>
+  </div>
+  <div class="regio-card">
+    <h4 style="color:var(--accent)">OH → H₂O (SN1 conditions)</h4>
+    <div>Protonate OH with H⁺ (strong acid, H₂SO₄ or HX) → H₂O becomes the leaving group (neutral, excellent LG). Then SN1 or E1 proceeds. Used for alcohol substitution and dehydration.</div>
+  </div>
+  <div class="regio-card">
+    <h4 style="color:var(--accent)">NH₂ → N₂ (Diazotization)</h4>
+    <div>Primary amines + NaNO₂/HCl → diazonium salt (R–N₂⁺). N₂ gas is the best leaving group. Used for SN1/aromatic substitution. Aliphatic diazonium → immediate SN1 + rearrangement.</div>
+  </div>
+</div>
+
+<div class="footer">Organic Chemistry · SN1 SN2 E1 E2 Master Reference · All mechanisms, stereochemistry, regiochemistry, and tips in one place</div>
+
+</body>
+</html>
